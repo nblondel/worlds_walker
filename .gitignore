@@ -58,3 +58,7 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# User addition
+Assets/Imports/Free Island Collection/*
+Assets/Imports/Free Island Collection*
+Library/Artifacts/*
