@@ -55,7 +55,7 @@ public class CameraManager : MonoBehaviour
             rotation_x = Mathf.Clamp(rotation_x, -_maxRotationAngle, _maxRotationAngle);
         }
 
-        target.localEulerAngles = new Vector3(-rotation_x, target.localEulerAngles.y, target.localEulerAngles.z);
+        target.localEulerAngles = new Vector3(rotation_x, target.localEulerAngles.y, target.localEulerAngles.z);
     }
 
     private void FollowTarget()
