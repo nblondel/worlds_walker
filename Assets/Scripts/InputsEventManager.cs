@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class InputsEventManager : MonoBehaviour {
     public delegate void BasicInput();
-    public delegate void MovementInput(float forward, float side, float rotation);
-    public static event MovementInput OnMovementKeyPressed;
+    public delegate void MovementInput(Vector3 movement, Vector3 rotation);
 
-    private PlayerControls _playerControls;
+    public static event MovementInput OnMovementKeyPressed;
+    public static event BasicInput OnJumpKeyPressed;
+    public static event BasicInput OnJumpKeyReleased;
 
     public string inputMoveFront;
     public string inputMoveBack;
@@ -14,9 +16,9 @@ public class InputsEventManager : MonoBehaviour {
     public string inputRotateLeft;
     public string inputRotateRight;
 
-    private float _forwardMovement;
-    private float _sideMovement;
-    private float _rotationMovement;
+    private PlayerControls _playerControls;
+    private Vector3 _movement;
+    private Vector3 _rotation;
 
     public Vector2 _movementForwardInput;
     public Vector2 _movementRotateInput;
@@ -28,6 +30,8 @@ public class InputsEventManager : MonoBehaviour {
             _playerControls = new PlayerControls();
             _playerControls.Playermovement.Move.performed += i => _movementForwardInput = i.ReadValue<Vector2>();
             _playerControls.Playermovement.Rotate.performed += i => _movementRotateInput = i.ReadValue<Vector2>();
+            _playerControls.Playermovement.Jump.started += ctx => OnJumpKeyPressed?.Invoke();
+            _playerControls.Playermovement.Jump.canceled += ctx => OnJumpKeyReleased?.Invoke();
         }
         _playerControls.Enable();
     }
@@ -38,16 +42,13 @@ public class InputsEventManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    public void Update() 
+    public void Update()
     {
-        _forwardMovement = _movementForwardInput.y;
-        _sideMovement = _movementForwardInput.x;
-        _rotationMovement = _movementRotateInput.x;
+        _movement.x = _movementForwardInput.y;
+        _movement.z = _movementForwardInput.x;
+        _rotation.y = _movementRotateInput.x;
+        _rotation.z = _movementRotateInput.y;
 
-        OnMovementKeyPressed?.Invoke(_forwardMovement, _sideMovement, _rotationMovement);
-    }
-
-    public static bool IsJumpButtonHeld() {
-        return Input.GetButton("Jump");
+        OnMovementKeyPressed?.Invoke(_movement, _rotation);
     }
 }
