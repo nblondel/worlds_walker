@@ -20,7 +20,9 @@ public class InputsEventManager : MonoBehaviour {
     private Vector3 _movement;
     private Vector3 _rotation;
 
+    // coords(x, y) => joystick(left/right, up/down)
     public Vector2 _movementForwardInput;
+    // coords(x, y) => joystick(left/right, up/down)
     public Vector2 _movementRotateInput;
 
     private void OnEnable()

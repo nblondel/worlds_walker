@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &469350162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 469350163}
+  m_Layer: 0
+  m_Name: CameraFollowPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &469350163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469350162}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.87, z: 0.21}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4427613559659150}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1078380946858620
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,13 +252,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1112338128624330}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 0, z: -1}
+  m_LocalRotation: {x: -0, y: -0.66000164, z: -0, w: 0.75126415}
+  m_LocalPosition: {x: 1674, y: 208, z: 855}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children:
   - {fileID: 4194766461503884}
   - {fileID: 4598045900303556}
   - {fileID: 4967422519543642}
+  - {fileID: 469350163}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -259,10 +290,10 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1112338128624330}
   serializedVersion: 2
-  m_Mass: 5
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
@@ -277,10 +308,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.16080679
-  m_Height: 0.4334252
+  m_Radius: 0.111294955
+  m_Height: 0.42050934
   m_Direction: 1
-  m_Center: {x: 0, y: 0.20741117, z: 0}
+  m_Center: {x: -0.005394459, y: 0.19665146, z: -0.05726026}
 --- !u!114 &1639379192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,11 +324,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56f3dad3f603f284a971fd522da7478f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 15
-  maxAcceleration: 5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
   acceleration: 15
-  turnSpeed: 70
-  jumpSpeed: {x: 0, y: 5, z: 0}
+  turnSpeed: 110
+  maxSpeed: {x: 13, y: 15, z: 10}
+  jumpDelay: 0.25
+  globalGravity: 9.81
+  linearDrag: 2.7
+  fallMultiplier: 5.8
 --- !u!1 &1114138090204880
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,12 +16,8 @@ public class PlayerScript : MonoBehaviour
     [Header("Movements")]
     public float acceleration = 15.0f;
     public float turnSpeed = 110.0f;
-    public Vector3 maxSpeed = new Vector3(13f, 0f, 10f);
-
-    [Header("Jump")]
-    public float jumpSpeed = 5f;
+    public Vector3 maxSpeed = new Vector3(13f, 15f, 10f);
     public float jumpDelay = 0.25f;
-    private float _jumpTimer;
 
     [Header("Gravity")]
     public float globalGravity = 9.81f;
@@ -33,6 +29,8 @@ public class PlayerScript : MonoBehaviour
     private float _sideSpeed = 0f;
     private float _highestSpeed = 0f;
     private Vector2 _currentSpeed = Vector2.zero;
+    private Vector3 _newPosition;
+    private float _jumpTimer;
 
     private bool _isGrounded;
     private bool _jumpAsked;
@@ -102,7 +100,6 @@ public class PlayerScript : MonoBehaviour
         // Acceleration
         _forwardSpeed += (Mathf.Abs(_movement.x) * acceleration) * Time.fixedDeltaTime;
         _forwardSpeed = Mathf.Clamp(_forwardSpeed, -maxSpeed.x, maxSpeed.x);
-
         _sideSpeed += (Mathf.Abs(_movement.z) * acceleration) * Time.fixedDeltaTime;
         _sideSpeed = Mathf.Clamp(_sideSpeed, -maxSpeed.z, maxSpeed.z);
 
@@ -110,11 +107,13 @@ public class PlayerScript : MonoBehaviour
         _currentSpeed.x = _highestSpeed * _movement.x;
         _currentSpeed.y = _highestSpeed * _movement.z;
 
-        // Rotate and move
+        // Rotate
         _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(new Vector2(0, _rotation.y * turnSpeed * Time.fixedDeltaTime)));
-        _rigidbody.MovePosition(_rigidbody.position + transform.forward * _currentSpeed.x * Time.fixedDeltaTime);
-        _rigidbody.MovePosition(_rigidbody.position + transform.right * _currentSpeed.y * Time.fixedDeltaTime);
+        // Move
+        _newPosition = (transform.forward * _currentSpeed.x) + (transform.right * _currentSpeed.y);
+        _rigidbody.MovePosition(_rigidbody.position + _newPosition * Time.fixedDeltaTime);
 
+        // Deceleration (instant)
         if (_movement.x == 0)
         {
             _forwardSpeed = 0;
@@ -130,7 +129,7 @@ public class PlayerScript : MonoBehaviour
         if (_jumpTimer > Time.fixedTime && _isGrounded)
         {
             _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0);
-            _rigidbody.AddForce(transform.up * jumpSpeed, ForceMode.Impulse);
+            _rigidbody.AddForce(transform.up * maxSpeed.y, ForceMode.Impulse);
             _jumpTimer = 0;
         }
     }
@@ -138,19 +137,25 @@ public class PlayerScript : MonoBehaviour
     private void ModifyPhysics()
     {
         if (_isGrounded)
-        { // On ground
+        { 
+            // On ground
             _rigidbody.drag = 0;
+            _rigidbody.AddForce(new Vector3(0, -1.0f, 0) * _rigidbody.mass * globalGravity, ForceMode.Force);
         }
         else
-        { // In the air
-            _rigidbody.AddForce(new Vector3(0, -1.0f, 0) * _rigidbody.mass * globalGravity);
+        { 
+            // In the air
+            _rigidbody.AddForce(new Vector3(0, -1.0f, 0) * _rigidbody.mass * globalGravity, ForceMode.Acceleration);
             _rigidbody.drag = linearDrag;
+
             if (_rigidbody.velocity.y < 0)
-            { // Falling
+            { 
+                // Falling
                 _rigidbody.AddForce(new Vector3(0, -1.0f, 0) * _rigidbody.mass * globalGravity * fallMultiplier);
             }
             else if (_rigidbody.velocity.y > 0 && _stopJumpAsked)
-            { // Hang time
+            { 
+                // Hang time
                 _rigidbody.AddForce(new Vector3(0, -1.0f, 0) * _rigidbody.mass * globalGravity * (fallMultiplier / 2));
             }
         }
@@ -191,15 +196,6 @@ public class PlayerScript : MonoBehaviour
 
     private void MoveInputPressed(Vector3 movement, Vector3 rotation)
     {
-        if (_isGrounded)
-        {
-            _movement = movement;
-        }
-        else
-        {
-            _sideSpeed = 0;
-        }
-
         _movement = movement;
         _rotation = rotation;
     }
